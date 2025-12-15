@@ -8,7 +8,7 @@
       },
       "steps\\search-web.step.ts": {
         "x": 700,
-        "y": 267
+        "y": 679
       },
       "steps\\research-api.step.ts": {
         "x": 0,
@@ -20,23 +20,23 @@
       },
       "steps\\generate-queries.step.ts": {
         "x": 350,
-        "y": 257
+        "y": 703
       },
       "steps\\follow-up-research.step.ts": {
         "x": 1702,
-        "y": 335
+        "y": 403
       },
       "steps\\extract-content.step.ts": {
         "x": 1002,
-        "y": 180
+        "y": 480
       },
       "steps\\compile-report.step.ts": {
-        "x": 1702,
-        "y": 180
+        "x": 3054,
+        "y": 277
       },
       "steps\\analyze-content.step.ts": {
         "x": 1352,
-        "y": 180
+        "y": 301
       }
     }
   }
