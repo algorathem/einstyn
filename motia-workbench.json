@@ -2,41 +2,41 @@
   {
     "id": "research",
     "config": {
-      "steps\\status-api.step.ts": {
+      "steps\\status_api_step.py": {
         "x": 0,
-        "y": 0
+        "y": 649
       },
-      "steps\\search-web.step.ts": {
-        "x": 700,
-        "y": 679
+      "steps\\search_web_step.py": {
+        "x": 2052,
+        "y": 621
       },
-      "steps\\research-api.step.ts": {
+      "steps\\research_api_step.py": {
         "x": 0,
-        "y": 223
+        "y": 872
       },
-      "steps\\report-api.step.ts": {
+      "steps\\report_api_step.py": {
         "x": 14,
-        "y": 446
+        "y": 1095
       },
-      "steps\\generate-queries.step.ts": {
+      "steps\\generate_queries_step.py": {
         "x": 350,
-        "y": 703
+        "y": 858
       },
-      "steps\\follow-up-research.step.ts": {
-        "x": 1702,
-        "y": 403
-      },
-      "steps\\extract-content.step.ts": {
-        "x": 1002,
-        "y": 480
-      },
-      "steps\\compile-report.step.ts": {
+      "steps\\follow_up_research_step.py": {
         "x": 3054,
-        "y": 277
+        "y": 650
       },
-      "steps\\analyze-content.step.ts": {
-        "x": 1352,
-        "y": 301
+      "steps\\extract_content_step.py": {
+        "x": 2354,
+        "y": 558
+      },
+      "steps\\compile_report_step.py": {
+        "x": 3054,
+        "y": 432
+      },
+      "steps\\analyze_content_step.py": {
+        "x": 2704,
+        "y": 519
       }
     }
   }

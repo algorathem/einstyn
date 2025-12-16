@@ -12,14 +12,14 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'Research Status API': ApiRouteHandler<{ requestId: string }, unknown, never>
-    'Web Search': EventHandler<{ searchQueries: Array<string>; requestId: string; originalQuery: string; depth: unknown }, { topic: 'search-results-collected'; data: { searchResults: Array<{ query: string; results: Array<{ url: string; title: string; snippet: string }> }>; requestId: string; originalQuery: string; depth: unknown } }>
-    'Deep Research API': ApiRouteHandler<{ query: string; breadth?: unknown; depth?: unknown }, unknown, { topic: 'research-started'; data: { query: string; breadth: unknown; depth: unknown; requestId: string } }>
-    'Research Report API': ApiRouteHandler<{ requestId: string }, unknown, never>
-    'Generate Search Queries': EventHandler<{ query: string; breadth: unknown; depth: unknown; requestId: string }, { topic: 'search-queries-generated'; data: { searchQueries: Array<string>; requestId: string; originalQuery: string; depth: unknown } }>
-    'Follow-up Research': EventHandler<{ followUpQueries: Array<string>; requestId: string; originalQuery: string; depth: unknown; previousAnalysis: { summary: string; keyFindings: Array<string>; sources: Array<{ title: string; url: string }> } }, { topic: 'search-queries-generated'; data: { searchQueries: Array<string>; requestId: string; originalQuery: string; depth: unknown } }>
-    'Extract Web Content': EventHandler<{ searchResults: Array<{ query: string; results: Array<{ url: string; title: string; snippet: string }> }>; requestId: string; originalQuery: string; depth: unknown }, { topic: 'content-extracted'; data: { extractedContents: Array<{ url: string; title: string; content: string; query: string }>; requestId: string; originalQuery: string; depth: unknown } }>
-    'Compile Research Report': EventHandler<{ analysis: { summary: string; keyFindings: Array<string>; sources: Array<{ title: string; url: string }> }; requestId: string; originalQuery: string; depth: unknown; isComplete: boolean }, never>
-    'Analyze Content': EventHandler<{ extractedContents: Array<{ url: string; title: string; content: string; query: string }>; requestId: string; originalQuery: string; depth: unknown }, { topic: 'analysis-completed'; data: { analysis: { summary: string; keyFindings: Array<string>; sources: Array<{ title: string; url: string }> }; requestId: string; originalQuery: string; depth: unknown; isComplete: boolean } } | { topic: 'follow-up-research-needed'; data: { followUpQueries: Array<string>; requestId: string; originalQuery: string; depth: unknown; previousAnalysis: { summary: string; keyFindings: Array<string>; sources: Array<{ title: string; url: string }> } } }>
+    'Research Status API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Web Search': EventHandler<never, { topic: 'search-results-collected'; data: never }>
+    'Deep Research API': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'research-started'; data: never }>
+    'Research Report API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Generate Search Queries': EventHandler<never, { topic: 'search-queries-generated'; data: never }>
+    'Follow-up Research': EventHandler<never, { topic: 'search-queries-generated'; data: never }>
+    'Extract Web Content': EventHandler<never, { topic: 'content-extracted'; data: never }>
+    'Compile Research Report': EventHandler<never, never>
+    'Analyze Content': EventHandler<never, { topic: 'analysis-completed'; data: never } | { topic: 'follow-up-research-needed'; data: never }>
   }
 }
