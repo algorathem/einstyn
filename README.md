@@ -1,4 +1,4 @@
-# Einstyn - Python Motia Research Workflow
+# ReSearchly - Python Motia Research Workflow
 
 This is a Python version of a Motia workflow project that performs deep research using Firecrawl for web search and OpenAI for content analysis.
 
