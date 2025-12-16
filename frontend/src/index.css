@@ -1,0 +1,251 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 220 20% 6%;
+    --foreground: 0 0% 95%;
+
+    --card: 220 15% 10%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 220 15% 10%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 175 85% 45%;
+    --primary-foreground: 220 20% 6%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 0 0% 90%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 220 10% 55%;
+
+    --accent: 175 60% 35%;
+    --accent-foreground: 0 0% 95%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 95%;
+
+    --success: 150 70% 42%;
+    --success-foreground: 220 20% 6%;
+
+    --warning: 35 90% 50%;
+    --warning-foreground: 220 20% 6%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 15%;
+    --ring: 175 85% 45%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens for glassmorphism */
+    --glass: 220 15% 12%;
+    --glass-border: 220 15% 22%;
+    --glass-glow: 175 85% 45%;
+
+    /* Graph colors */
+    --node-primary: 175 85% 50%;
+    --node-secondary: 200 70% 45%;
+    --node-tertiary: 280 60% 50%;
+    --edge-color: 175 50% 30%;
+
+    --sidebar-background: 220 15% 8%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 175 85% 45%;
+    --sidebar-primary-foreground: 220 20% 6%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 175 85% 45%;
+  }
+
+  .dark {
+    --background: 220 20% 6%;
+    --foreground: 0 0% 95%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Outfit', sans-serif;
+  }
+}
+
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply bg-glass/60 backdrop-blur-xl border border-glass-border/50 rounded-xl;
+    box-shadow: 
+      0 4px 30px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300;
+  }
+
+  .glass-card-hover:hover {
+    @apply border-primary/30;
+    box-shadow: 
+      0 8px 40px rgba(0, 0, 0, 0.4),
+      0 0 20px hsl(var(--primary) / 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Glow effects */
+  .glow-primary {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3), 0 0 40px hsl(var(--primary) / 0.1);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+
+  /* Research depth buttons */
+  .depth-button {
+    @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300;
+    @apply bg-secondary/50 text-muted-foreground border border-transparent;
+  }
+
+  .depth-button:hover {
+    @apply bg-secondary text-foreground;
+  }
+
+  .depth-button-active {
+    @apply bg-primary/20 text-primary border-primary/50 glow-primary;
+  }
+
+  /* Trust score badges */
+  .trust-high {
+    @apply bg-success/20 text-success border border-success/30;
+  }
+
+  .trust-medium {
+    @apply bg-warning/20 text-warning border border-warning/30;
+  }
+
+  .trust-low {
+    @apply bg-destructive/20 text-destructive border border-destructive/30;
+  }
+
+  /* Citation format selector */
+  .citation-tab {
+    @apply px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200;
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  .citation-tab-active {
+    @apply bg-primary/20 text-primary;
+  }
+
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: hsl(var(--secondary));
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+  }
+}
+
+@layer utilities {
+  /* Animation utilities */
+  .animate-pulse-slow {
+    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-node-pulse {
+    animation: node-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-edge-flow {
+    animation: edge-flow 2s linear infinite;
+  }
+
+  .animate-sequential {
+    animation: sequential-glow 4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+  }
+  to {
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.5), 0 0 50px hsl(var(--primary) / 0.2);
+  }
+}
+
+@keyframes node-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes edge-flow {
+  0% {
+    stroke-dashoffset: 20;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes sequential-glow {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.5);
+  }
+}
