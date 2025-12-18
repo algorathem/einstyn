@@ -13,11 +13,13 @@ import { Slider } from '@/components/ui/slider';
 
 interface FindingsPanelProps {
   findings: Finding[];
+  onSelectSource?: (finding: Finding) => void;
+  selectedSourceId?: string;
 }
 
 type SortOption = 'relevance' | 'trustScore' | 'date';
 
-export const FindingsPanel = ({ findings }: FindingsPanelProps) => {
+export const FindingsPanel = ({ findings, onSelectSource, selectedSourceId }: FindingsPanelProps) => {
   const [excludedIds, setExcludedIds] = useState<Set<string>>(new Set());
   const [showFilters, setShowFilters] = useState(false);
   
@@ -310,6 +312,8 @@ export const FindingsPanel = ({ findings }: FindingsPanelProps) => {
               index={index}
               isExcluded={excludedIds.has(finding.id)}
               onToggleExclude={toggleExclude}
+              isSelected={selectedSourceId === finding.id}
+              onSelect={onSelectSource}
             />
           ))
         )}

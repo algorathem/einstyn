@@ -9,6 +9,7 @@ import { FindingsPanel } from '@/components/research/FindingsPanel';
 import { ReportEditor } from '@/components/research/ReportEditor';
 import { DashboardCards } from '@/components/dashboard/DashboardCards';
 import { Finding } from '@/components/research/FindingCard';
+import { SourceChat } from '@/components/research/SourceChat';
 import { LayoutDashboard, Microscope } from 'lucide-react';
 
 const mockFindings: Finding[] = [
@@ -65,6 +66,8 @@ export default function Index() {
   const [isResearching, setIsResearching] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [editorExpanded, setEditorExpanded] = useState(false);
+  const [selectedSource, setSelectedSource] = useState<Finding | null>(null);
+  
   const handleSearch = (query: string) => {
     setIsResearching(true);
     setCurrentStep(0);
@@ -136,39 +139,51 @@ export default function Index() {
                   fixed lg:relative inset-y-0 left-0 z-40 lg:z-auto
                 `}
               >
-                <FindingsPanel findings={findings} />
+                <FindingsPanel 
+                  findings={findings} 
+                  onSelectSource={setSelectedSource}
+                  selectedSourceId={selectedSource?.id}
+                />
               </aside>
 
               {/* Center - Workspace */}
               <main className={`p-6 overflow-y-auto custom-scrollbar transition-all duration-300 ${
                 editorExpanded ? 'w-0 p-0 opacity-0 overflow-hidden' : 'flex-1'
               }`}>
-                <div className="max-w-3xl mx-auto space-y-6">
-                  <QueryInput onSubmit={handleSearch} isLoading={isResearching} />
-                  
-                  {isResearching && (
-                    <ResearchPipeline
-                      steps={pipelineSteps}
-                      currentStep={currentStep}
-                      isPaused={isPaused}
-                      onPause={() => setIsPaused(true)}
-                      onResume={() => setIsPaused(false)}
-                      onSkip={() => setCurrentStep((prev) => Math.min(prev + 1, pipelineSteps.length - 1))}
+                {selectedSource ? (
+                  <div className="h-full max-w-4xl mx-auto">
+                    <SourceChat 
+                      source={selectedSource} 
+                      onClose={() => setSelectedSource(null)} 
                     />
-                  )}
+                  </div>
+                ) : (
+                  <div className="max-w-3xl mx-auto space-y-6">
+                    <QueryInput onSubmit={handleSearch} isLoading={isResearching} />
+                    
+                    {isResearching && (
+                      <ResearchPipeline
+                        steps={pipelineSteps}
+                        currentStep={currentStep}
+                        isPaused={isPaused}
+                        onPause={() => setIsPaused(true)}
+                        onResume={() => setIsPaused(false)}
+                        onSkip={() => setCurrentStep((prev) => Math.min(prev + 1, pipelineSteps.length - 1))}
+                      />
+                    )}
 
-                  {!isResearching && findings.length > 0 && (
-                    <div className="glass-card p-6 text-center">
-                      <h3 className="text-lg font-semibold text-foreground mb-2">
-                        Research Complete
-                      </h3>
-                      <p className="text-muted-foreground text-sm">
-                        Found {findings.length} relevant findings. Review them in the left panel and
-                        compile your report on the right.
-                      </p>
-                    </div>
-                  )}
-                </div>
+                    {!isResearching && findings.length > 0 && !selectedSource && (
+                      <div className="glass-card p-6 text-center">
+                        <h3 className="text-lg font-semibold text-foreground mb-2">
+                          Research Complete
+                        </h3>
+                        <p className="text-muted-foreground text-sm">
+                          Found {findings.length} relevant findings. Click a source in the left panel to explore it.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </main>
 
               {/* Right Panel - Report Editor */}

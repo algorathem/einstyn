@@ -21,9 +21,11 @@ interface FindingCardProps {
   index: number;
   isExcluded?: boolean;
   onToggleExclude?: (id: string) => void;
+  isSelected?: boolean;
+  onSelect?: (finding: Finding) => void;
 }
 
-export const FindingCard = ({ finding, index, isExcluded = false, onToggleExclude }: FindingCardProps) => {
+export const FindingCard = ({ finding, index, isExcluded = false, onToggleExclude, isSelected = false, onSelect }: FindingCardProps) => {
   const [showReasoning, setShowReasoning] = useState(false);
 
   const getTrustBadge = () => {
@@ -64,9 +66,19 @@ export const FindingCard = ({ finding, index, isExcluded = false, onToggleExclud
   const TrustIcon = trustBadge.icon;
   const FactIcon = factBadge.icon;
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Don't trigger if clicking on buttons/links
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('a')) return;
+    onSelect?.(finding);
+  };
+
   return (
     <div
-      className={`glass-card-hover p-4 animate-slide-in-left transition-opacity ${isExcluded ? 'opacity-50' : ''}`}
+      onClick={handleCardClick}
+      className={`glass-card-hover p-4 animate-slide-in-left transition-all cursor-pointer ${
+        isExcluded ? 'opacity-50' : ''
+      } ${isSelected ? 'ring-2 ring-primary border-primary' : ''}`}
       style={{ animationDelay: `${index * 100}ms` }}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
