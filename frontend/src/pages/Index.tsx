@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { KnowledgeGraph } from '@/components/background/KnowledgeGraph';
 import { FooterGraph } from '@/components/background/FooterGraph';
 import { Header } from '@/components/layout/Header';
@@ -10,7 +11,8 @@ import { ReportEditor } from '@/components/research/ReportEditor';
 import { DashboardCards } from '@/components/dashboard/DashboardCards';
 import { Finding } from '@/components/research/FindingCard';
 import { SourceChat } from '@/components/research/SourceChat';
-import { LayoutDashboard, Microscope } from 'lucide-react';
+import { LayoutDashboard, Microscope, User } from 'lucide-react';
+import { AuthButtons } from '@/components/AuthButtons';
 
 const mockFindings: Finding[] = [
   {
@@ -58,6 +60,7 @@ const pipelineSteps = [
 ];
 
 export default function Index() {
+  const { user } = useAuth0();
   const [view, setView] = useState<'research' | 'dashboard'>('research');
   const [depth, setDepth] = useState<ResearchDepth>('intermediate');
   const [isPaused, setIsPaused] = useState(false);
@@ -95,7 +98,14 @@ export default function Index() {
 
         {/* View Toggle */}
         <div className="px-6 py-4 flex items-center justify-between border-b border-border/50 bg-background/50 backdrop-blur-sm">
-          <div className="flex items-center gap-2 bg-secondary/30 rounded-lg p-1">
+          <div className="flex items-center gap-4">
+            {user && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <User className="w-4 h-4" />
+                <span>{user.name || user.email}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-2 bg-secondary/30 rounded-lg p-1">
             <button
               onClick={() => setView('research')}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -119,10 +129,14 @@ export default function Index() {
               Dashboard
             </button>
           </div>
+          </div>
 
-          {view === 'research' && (
-            <DepthSelector value={depth} onChange={setDepth} />
-          )}
+          <div className="flex items-center gap-4">
+            {view === 'research' && (
+              <DepthSelector value={depth} onChange={setDepth} />
+            )}
+            <AuthButtons />
+          </div>
         </div>
 
         {/* Main Area */}
