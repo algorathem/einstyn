@@ -23,9 +23,9 @@ This project uses Auth0 for authentication. To set up Auth0:
 
 2. **Configure Auth0 Application Settings**
    - In your Auth0 application settings, configure the following URLs:
-     - **Allowed Callback URLs**: `http://localhost:5173`
-     - **Allowed Logout URLs**: `http://localhost:5173`
-     - **Allowed Web Origins**: `http://localhost:5173`
+     - **Allowed Callback URLs**: `http://localhost:8080`
+     - **Allowed Logout URLs**: `http://localhost:8080`
+     - **Allowed Web Origins**: `http://localhost:8080`
    - For production, add your production URLs to these fields as well
 
 3. **Create Environment File**
@@ -37,7 +37,7 @@ This project uses Auth0 for authentication. To set up Auth0:
      - `VITE_AUTH0_DOMAIN`: Your Auth0 domain (e.g., `your-tenant.auth0.com`)
      - `VITE_AUTH0_CLIENT_ID`: Your Auth0 Client ID (found in your application settings)
      - `VITE_AUTH0_AUDIENCE`: (Optional) Your API identifier if using Auth0 APIs
-     - `VITE_AUTH0_REDIRECT_URI`: `http://localhost:5173` (default)
+     - `VITE_AUTH0_REDIRECT_URI`: `http://localhost:8080` (port number for this project)
 
 4. **Start the Development Server**
    ```sh
@@ -46,14 +46,3 @@ This project uses Auth0 for authentication. To set up Auth0:
 
 **Note**: The `.env.local` file is git-ignored and will never be committed. Only `.env.example` is tracked in the repository.
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
