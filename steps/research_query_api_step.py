@@ -8,7 +8,7 @@ config = {
     'type': 'api',
     'name': 'Research Query API',
     'description': 'API endpoint to query research sources',
-    'path': '/api/research/query',
+    'path': '/api/v1/research/query',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
@@ -42,11 +42,11 @@ async def handler(req, context):
         sources = []
         for result in search_results:
             sources.append({
-                'title': result.title,
-                'url': result.url,
-                'snippet': result.snippet,
+                'title': result.get('title', ''),
+                'url': result.get('url', ''),
+                'snippet': result.get('snippet', ''),
                 'authors': [],  # Firecrawl might not provide authors
-                'abstract': result.snippet,  # Using snippet as abstract
+                'abstract': result.get('snippet', ''),  # Using snippet as abstract
             })
         
         return {

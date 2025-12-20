@@ -8,7 +8,7 @@ config = {
     'type': 'api',
     'name': 'Source Validation API',
     'description': 'API endpoint for validating AI responses',
-    'path': '/api/source/{sourceId}/validate',
+    'path': '/api/v1/source/validate',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
@@ -18,8 +18,8 @@ async def handler(req, context):
     """Handler for source validation API"""
     logger = context.logger
     
-    path_params = req.get('pathParams', {})
-    source_id = path_params.get('sourceId', '')
+    query_params = req.get('queryParams', {})
+    source_id = query_params.get('sourceId', '')
     body = req.get('body', {})
     ai_response = body.get('aiResponse', '')
     constraints = body.get('constraints', {})

@@ -7,7 +7,7 @@ config = {
     'type': 'api',
     'name': 'User Log API',
     'description': 'API endpoint for logging user interactions',
-    'path': '/api/user/log',
+    'path': '/api/v1/user/log',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],

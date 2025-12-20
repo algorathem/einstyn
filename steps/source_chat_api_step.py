@@ -9,7 +9,7 @@ config = {
     'type': 'api',
     'name': 'Source Chat API',
     'description': 'API endpoint for chatting with a research source',
-    'path': '/api/source/{sourceId}/chat',
+    'path': '/api/v1/source/chat',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
@@ -19,8 +19,8 @@ async def handler(req, context):
     """Handler for source chat API"""
     logger = context.logger
     
-    path_params = req.get('pathParams', {})
-    source_id = path_params.get('sourceId', '')
+    query_params = req.get('queryParams', {})
+    source_id = query_params.get('sourceId', '')
     body = req.get('body', {})
     user_message = body.get('message', '')
     mode = body.get('mode', 'summary')  # summary, explanation, implementation

@@ -7,7 +7,7 @@ config = {
     'type': 'api',
     'name': 'Source Mode API',
     'description': 'API endpoint for toggling source interaction modes',
-    'path': '/api/source/{sourceId}/mode',
+    'path': '/api/v1/source/mode',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
@@ -17,8 +17,8 @@ async def handler(req, context):
     """Handler for source mode toggle API"""
     logger = context.logger
     
-    path_params = req.get('pathParams', {})
-    source_id = path_params.get('sourceId', '')
+    query_params = req.get('queryParams', {})
+    source_id = query_params.get('sourceId', '')
     body = req.get('body', {})
     mode = body.get('mode', 'summary')  # summary, explanation, implementation
     

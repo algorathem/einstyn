@@ -9,7 +9,7 @@ config = {
     'type': 'api',
     'name': 'Source Action API',
     'description': 'API endpoint for performing actions on research sources',
-    'path': '/api/source/{sourceId}/action',
+    'path': '/api/v1/source/action',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
@@ -19,8 +19,8 @@ async def handler(req, context):
     """Handler for source action API"""
     logger = context.logger
     
-    path_params = req.get('pathParams', {})
-    source_id = path_params.get('sourceId', '')
+    query_params = req.get('queryParams', {})
+    source_id = query_params.get('sourceId', '')
     body = req.get('body', {})
     action_type = body.get('actionType', '')
     context_data = body.get('context', '')  # Additional context for the action

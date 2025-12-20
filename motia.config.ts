@@ -7,4 +7,8 @@ import { defineConfig } from '@motiadev/core'
 
 export default defineConfig({
   plugins: [], // endpointPlugin, logsPlugin, statesPlugin, bullmqPlugin
+  states: {
+    disabled: true,
+    adapter: 'memory'
+  }
 })
