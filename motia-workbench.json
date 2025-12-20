@@ -19,5 +19,42 @@
         "y": 60
       }
     }
+  },
+  {
+    "id": "research",
+    "config": {
+      "steps\\user_log_api_step.py": {
+        "x": 13,
+        "y": 0
+      },
+      "steps\\source_validation_api_step.py": {
+        "x": 0,
+        "y": 203
+      },
+      "steps\\source_mode_api_step.py": {
+        "x": 0,
+        "y": 426
+      },
+      "steps\\source_details_api_step.py": {
+        "x": 0,
+        "y": 649
+      },
+      "steps\\source_chat_api_step.py": {
+        "x": 0,
+        "y": 872
+      },
+      "steps\\source_action_api_step.py": {
+        "x": 0,
+        "y": 1095
+      },
+      "steps\\research_query_api_step.py": {
+        "x": 18,
+        "y": 1318
+      },
+      "steps\\report_feedback_api_step.py": {
+        "x": 0,
+        "y": 1521
+      }
+    }
   }
 ]
