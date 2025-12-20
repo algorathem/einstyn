@@ -203,6 +203,115 @@ Content-Type: application/json
 - `generate_questions`: Create discussion questions
 - `summarize_methodology`: Focus on research methods
 
+### 6. Source Validation
+
+Validate AI response for a research source with confidence score and flagged inconsistencies.
+
+**Endpoint:** `POST /api/source/:sourceId/validate`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**URL Parameters:**
+- `sourceId`: The unique identifier of the research source
+
+**Request Body:**
+```json
+{
+  "aiResponse": "The machine learning model achieves 95% accuracy on the test dataset",
+  "constraints": {
+    "must_cite_sources": true,
+    "match_pseudocode": false
+  }
+}
+```
+
+**Response:**
+```json
+{
+  "sourceId": "source_123",
+  "validationReport": {
+    "confidenceScore": 0.87,
+    "isValid": true,
+    "flaggedInconsistencies": [
+      {
+        "type": "citation_missing",
+        "description": "Response mentions accuracy but doesn't cite the source",
+        "severity": "medium"
+      }
+    ],
+    "recommendations": [
+      "Add citation to the original paper for accuracy claims"
+    ]
+  },
+  "timestamp": "2025-12-21T10:30:00.000Z"
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "Source not found",
+  "timestamp": "2025-12-21T10:30:00.000Z"
+}
+```
+
+### 7. User Interaction Logging
+
+Log user actions for analytics and workflow monitoring.
+
+**Endpoint:** `POST /api/user/log`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "actions": [
+    {
+      "type": "click",
+      "element": "search_button",
+      "timestamp": "2025-12-21T10:30:00.000Z"
+    },
+    {
+      "type": "drag",
+      "element": "source_card",
+      "sourceId": "source_123",
+      "timestamp": "2025-12-21T10:30:01.000Z"
+    },
+    {
+      "type": "mode_toggle",
+      "from": "summary",
+      "to": "explanation",
+      "sourceId": "source_123",
+      "timestamp": "2025-12-21T10:30:02.000Z"
+    }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "message": "User actions logged successfully",
+  "loggedCount": 3,
+  "timestamp": "2025-12-21T10:30:00.000Z"
+}
+```
+
+**Error Response:**
+```json
+{
+  "error": "Actions array is required",
+  "timestamp": "2025-12-21T10:30:00.000Z"
+}
+```
+
 ### 6. API Documentation
 
 Get detailed API documentation.

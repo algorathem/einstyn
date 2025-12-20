@@ -21,6 +21,11 @@ const mockSources = [
   { id: '2', title: 'AI Ethics', content: 'Ethical considerations in AI...' }
 ]
 
+// Mock database for user searches, logs, validations
+const userSearches = []
+const userLogs = []
+const validations = []
+
 // Health endpoint
 app.get('/health', (req, res) => {
   res.json({
@@ -31,7 +36,12 @@ app.get('/health', (req, res) => {
       'POST /api/research/query',
       'POST /api/source/:sourceId/chat',
       'POST /api/source/:sourceId/mode',
-      'POST /api/source/:sourceId/action'
+      'POST /api/source/:sourceId/action',
+      'POST /api/source/:sourceId/validate',
+      'POST /api/user/log',
+      'POST /api/report/feedback',
+      'GET /api/source/:sourceId/details',
+      'GET /api/docs'
     ]
   })
 })
@@ -44,12 +54,23 @@ app.post('/api/research/query', (req, res) => {
     return res.status(400).json({ error: 'Query is required' })
   }
 
+  // Simulate db storage
+  const searchEntry = {
+    id: Date.now().toString(),
+    query: query,
+    filters: filters || {},
+    timestamp: new Date().toISOString(),
+    resultsCount: mockSources.length
+  }
+  userSearches.push(searchEntry)
+
   // Mock response
   res.json({
     sources: mockSources,
     total: mockSources.length,
     query: query,
-    filters: filters || {}
+    filters: filters || {},
+    searchId: searchEntry.id
   })
 })
 
@@ -120,6 +141,156 @@ app.post('/api/source/:sourceId/action', (req, res) => {
   })
 })
 
+// Source validate endpoint
+app.post('/api/source/:sourceId/validate', (req, res) => {
+  const { sourceId } = req.params
+  const { aiResponse, constraints } = req.body
+
+  if (!aiResponse) {
+    return res.status(400).json({ error: 'AI response is required' })
+  }
+
+  const source = mockSources.find(s => s.id === sourceId)
+  if (!source) {
+    return res.status(404).json({ error: 'Source not found' })
+  }
+
+  // Simulate db storage
+  const validationEntry = {
+    id: Date.now().toString(),
+    sourceId: sourceId,
+    aiResponse: aiResponse,
+    constraints: constraints || {},
+    timestamp: new Date().toISOString()
+  }
+  validations.push(validationEntry)
+
+  // Mock validation response
+  res.json({
+    sourceId: sourceId,
+    validationReport: {
+      confidenceScore: 0.87,
+      isValid: true,
+      flaggedInconsistencies: [
+        {
+          type: 'citation_missing',
+          description: 'Response mentions accuracy but doesn\'t cite the source',
+          severity: 'medium'
+        }
+      ],
+      recommendations: [
+        'Add citation to the original paper for accuracy claims'
+      ]
+    },
+    timestamp: new Date().toISOString()
+  })
+})
+
+// User log endpoint
+app.post('/api/user/log', (req, res) => {
+  const { actions } = req.body
+
+  if (!actions || !Array.isArray(actions)) {
+    return res.status(400).json({ error: 'Actions array is required' })
+  }
+
+  // Simulate db storage
+  const logEntry = {
+    id: Date.now().toString(),
+    actions: actions,
+    timestamp: new Date().toISOString()
+  }
+  userLogs.push(logEntry)
+
+  res.json({
+    message: 'User actions logged successfully',
+    loggedCount: actions.length,
+    timestamp: new Date().toISOString()
+  })
+})
+
+// Report feedback endpoint
+app.post('/api/report/feedback', (req, res) => {
+  const { reportContent, flags } = req.body
+
+  if (!reportContent) {
+    return res.status(400).json({ error: 'Report content is required' })
+  }
+
+  // Mock feedback response
+  const mockFeedback = [
+    {
+      section: 'introduction',
+      issueType: 'clarity',
+      suggestion: 'Consider adding more context about the research gap this work addresses',
+      confidence: 0.85
+    },
+    {
+      section: 'methodology',
+      issueType: 'replicability',
+      suggestion: 'Include specific hyperparameters and random seeds for reproducibility',
+      confidence: 0.92
+    },
+    {
+      section: 'results',
+      issueType: 'evidence',
+      suggestion: 'Add statistical significance tests for the key findings',
+      confidence: 0.78
+    }
+  ]
+
+  res.json({
+    message: 'Feedback generated successfully',
+    feedback: mockFeedback,
+    timestamp: new Date().toISOString()
+  })
+})
+
+// Source details endpoint
+app.get('/api/source/:sourceId/details', (req, res) => {
+  const { sourceId } = req.params
+
+  const source = mockSources.find(s => s.id === sourceId)
+  if (!source) {
+    return res.status(404).json({ error: 'Source not found' })
+  }
+
+  // Mock detailed metadata
+  const mockDetails = {
+    sourceId: sourceId,
+    metadata: {
+      title: source.title,
+      url: `https://example.com/paper/${sourceId}`,
+      abstract: `This is a detailed abstract for ${source.title}. It contains comprehensive information about the research methodology, findings, and implications.`,
+      pdfLink: `https://example.com/paper/${sourceId}.pdf`,
+      figures: [
+        {
+          line: 45,
+          text: 'Figure 1: Architecture diagram showing the proposed model'
+        },
+        {
+          line: 78,
+          text: 'Figure 2: Performance comparison across different datasets'
+        }
+      ],
+      pseudocodeBlocks: [
+        {
+          line: 120,
+          code: `def train_model(data, epochs=100):
+    model = initialize_model()
+    for epoch in range(epochs):
+        loss = model.train_step(data)
+        print(f"Epoch {epoch}: loss = {loss}")
+    return model`
+        }
+      ],
+      fullContent: source.content + ' [Extended content would be here]'
+    }
+  }
+
+  res.json(mockDetails)
+})
+
 // API docs endpoint
 app.get('/api/docs', (req, res) => {
   res.json({
@@ -164,13 +335,52 @@ app.get('/api/docs', (req, res) => {
             actionType: 'string (required)',
             context: 'string (optional)'
           }
+        },
+        validate: {
+          method: 'POST',
+          path: '/api/source/:sourceId/validate',
+          description: 'Validate AI response for a source with confidence score',
+          body: {
+            aiResponse: 'string (required)',
+            constraints: 'object (optional: must_cite_sources, match_pseudocode)'
+          }
+        }
+      },
+      user: {
+        log: {
+          method: 'POST',
+          path: '/api/user/log',
+          description: 'Log user actions for analytics',
+          body: {
+            actions: 'array (required: clicks, drags, mode_toggles)'
+          }
+        }
+      },
+      report: {
+        feedback: {
+          method: 'POST',
+          path: '/api/report/feedback',
+          description: 'Get AI feedback on research reports',
+          body: {
+            reportContent: 'string (required)',
+            flags: 'object (optional: replicability, evidence_check)'
+          }
+        }
+      },
+      sourceDetails: {
+        details: {
+          method: 'GET',
+          path: '/api/source/:sourceId/details',
+          description: 'Get detailed metadata and content for a source',
+          params: {
+            sourceId: 'string (required)'
+          }
         }
       }
     }
   })
 })
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Test server running on http://localhost:${PORT}`)
   console.log('Available endpoints:')
@@ -179,5 +389,9 @@ app.listen(PORT, () => {
   console.log('  POST /api/source/:sourceId/chat')
   console.log('  POST /api/source/:sourceId/mode')
   console.log('  POST /api/source/:sourceId/action')
+  console.log('  POST /api/source/:sourceId/validate')
+  console.log('  POST /api/user/log')
+  console.log('  POST /api/report/feedback')
+  console.log('  GET  /api/source/:sourceId/details')
   console.log('  GET  /api/docs')
 })

@@ -8,7 +8,7 @@ config = {
     'type': 'api',
     'name': 'Report Feedback API',
     'description': 'API endpoint for getting AI feedback on research reports',
-    'path': '/api/v1/report/feedback',
+    'path': '/api/report/feedback',
     'method': 'POST',
     'emits': [],
     'flows': ['research'],
