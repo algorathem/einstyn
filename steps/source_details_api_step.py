@@ -8,7 +8,7 @@ config = {
     'type': 'api',
     'name': 'Source Details API',
     'description': 'API endpoint for getting detailed source information',
-    'path': '/api/source/{sourceId}/details',
+    'path': '/api/v1/source/details',
     'method': 'GET',
     'emits': [],
     'flows': ['research'],
@@ -18,8 +18,8 @@ async def handler(req, context):
     """Handler for source details API"""
     logger = context.logger
     
-    path_params = req.get('pathParams', {})
-    source_id = path_params.get('sourceId', '')
+    query_params = req.get('queryParams', {})
+    source_id = query_params.get('sourceId', '')
     
     if not source_id:
         return {
