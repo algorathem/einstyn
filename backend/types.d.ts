@@ -21,4 +21,5 @@ declare module 'motia' {
     'Research Query API': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'Report Feedback API': ApiRouteHandler<Record<string, unknown>, unknown, never>
   }
+    
 }
