@@ -1,6 +1,10 @@
 import os
 from openai import OpenAI
 import json
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class OpenAIService:
     def __init__(self):
