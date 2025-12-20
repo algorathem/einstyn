@@ -12,6 +12,14 @@ declare module 'motia' {
   }
 
   interface Handlers {
+    'User Log API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Source Validation API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Source Mode API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Source Details API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Source Chat API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Source Action API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Research Query API': ApiRouteHandler<Record<string, unknown>, unknown, never>
+    'Report Feedback API': ApiRouteHandler<Record<string, unknown>, unknown, never>
     'StateAuditJob': CronHandler<{ topic: 'notification'; data: { template_id: string; email: string; template_data: Record<string, unknown> } }>
     'ProcessFoodOrder': EventHandler<{ email: string; quantity: unknown; pet_id: string }, { topic: 'notification'; data: { template_id: string; email: string; template_data: Record<string, unknown> } }>
     'Notification': EventHandler<{ template_id: string; email: string; template_data: Record<string, unknown> }, never>
