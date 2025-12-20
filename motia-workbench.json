@@ -1,42 +1,22 @@
 [
   {
-    "id": "research",
+    "id": "basic-tutorial",
     "config": {
-      "steps\\status_api_step.py": {
+      "src\\petstore\\state_audit_cron_step.py": {
+        "x": 225,
+        "y": 0
+      },
+      "src\\petstore\\process_food_order_step.py": {
+        "x": 225,
+        "y": 219
+      },
+      "src\\petstore\\notification_step.py": {
+        "x": 575,
+        "y": 141
+      },
+      "src\\petstore\\api_step.py": {
         "x": 0,
-        "y": 649
-      },
-      "steps\\search_web_step.py": {
-        "x": 2052,
-        "y": 621
-      },
-      "steps\\research_api_step.py": {
-        "x": 0,
-        "y": 872
-      },
-      "steps\\report_api_step.py": {
-        "x": 14,
-        "y": 1095
-      },
-      "steps\\generate_queries_step.py": {
-        "x": 932,
-        "y": 907
-      },
-      "steps\\follow_up_research_step.py": {
-        "x": 3008,
-        "y": 1348
-      },
-      "steps\\extract_content_step.py": {
-        "x": 2692,
-        "y": 601
-      },
-      "steps\\compile_report_step.py": {
-        "x": 3685,
-        "y": 813
-      },
-      "steps\\analyze_content_step.py": {
-        "x": 3059,
-        "y": 828
+        "y": 60
       }
     }
   }

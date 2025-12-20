@@ -1,62 +1,93 @@
-# ReSearchly - Python Motia Research Workflow
+# motia-backend
 
-This is a Python version of a Motia workflow project that performs deep research using Firecrawl for web search and OpenAI for content analysis.
+A Motia tutorial project in Python.
 
-## Setup
+## What is Motia?
 
-1. Install Python dependencies:
+Motia is an open-source, unified backend framework that eliminates runtime fragmentation by bringing **APIs, background jobs, queueing, streaming, state, workflows, AI agents, observability, scaling, and deployment** into one unified system using a single core primitive, the **Step**.
+
+## Quick Start
+
 ```bash
-pip install -r requirements.txt
+# Start the development server
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
 ```
 
-2. Install Motia (if not already installed):
+This starts the Motia runtime and the **Workbench** - a powerful UI for developing and debugging your workflows. By default, it's available at [`http://localhost:3000`](http://localhost:3000).
+
+1. **Open the Workbench** in your browser at [`http://localhost:3000`](http://localhost:3000)
+2. **Click the `Tutorial`** button on the top right of the workbench
+3. **Complete the `Tutorial`** to get an understanding of the basics of Motia and using the Workbench
+
+## Step Types
+
+Every Step has a `type` that defines how it triggers:
+
+| Type | When it runs | Use case |
+|------|--------------|----------|
+| **`api`** | HTTP request | REST APIs, webhooks |
+| **`event`** | Event emitted | Background jobs, workflows |
+| **`cron`** | Schedule | Cleanup, reports, reminders |
+
+## Development Commands
+
 ```bash
-npm install motia
-```
+# Start Workbench and development server
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
 
-3. Set up environment variables in a `.env` file:
-```
-FIRECRAWL_API_KEY=your_firecrawl_api_key
-FIRECRAWL_API_URL=optional_firecrawl_api_url
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-4o
-FIRECRAWL_CONCURRENCY_LIMIT=2
+# Start production server (without hot reload)
+npm run start
+# or
+yarn start
+# or
+pnpm start
+
+# Generate TypeScript types from Step configs
+npm run generate-types
+# or
+yarn generate-types
+# or
+pnpm generate-types
+
+# Build project for deployment
+npm run build
+# or
+yarn build
+# or
+pnpm build
 ```
 
 ## Project Structure
 
-- `steps/` - Python step files (workflow handlers)
-  - `*_step.py` - Step files following Motia naming convention
-- `services/` - Service classes for external APIs
-  - `firecrawl_service.py` - Firecrawl integration
-  - `openai_service.py` - OpenAI integration
-- `steps/types/` - Type definitions
-  - `research_config.py` - Research configuration types
-
-## Running the Project
-
-Start the Motia development server:
-```bash
-npm run dev
+```
+steps/              # Your Step definitions (or use src/)
+src/                 # Shared services and utilities
+motia.config.ts      # Motia configuration
+requirements.txt     # Python dependencies
 ```
 
-This will start the Motia Workbench where you can test and debug your workflows.
+Steps are auto-discovered from your `steps/` or `src/` directories - no manual registration required. You can write Steps in Python, TypeScript, or JavaScript, all in the same project.
 
-## Workflow Steps
+## Tutorial
 
-1. **Research API** (`research_api_step.py`) - Entry point to start research
-2. **Generate Queries** (`generate_queries_step.py`) - Generates search queries using OpenAI
-3. **Web Search** (`search_web_step.py`) - Performs web searches using Firecrawl
-4. **Extract Content** (`extract_content_step.py`) - Extracts content from search results
-5. **Analyze Content** (`analyze_content_step.py`) - Analyzes content and generates insights
-6. **Follow-up Research** (`follow_up_research_step.py`) - Handles follow-up research queries
-7. **Compile Report** (`compile_report_step.py`) - Compiles final research report
-8. **Status API** (`status_api_step.py`) - Check research status
-9. **Report API** (`report_api_step.py`) - Retrieve research reports
+This project includes an interactive tutorial that will guide you through:
+- Understanding Steps and their types
+- Creating API endpoints
+- Building event-driven workflows
+- Using state management
+- Observing your flows in the Workbench
 
-## Notes
+## Learn More
 
-- All Python step files follow the `*_step.py` naming convention required by Motia
-- Services are designed to be async-compatible
-- The workflow supports configurable research depth and breadth
-
+- [Documentation](https://motia.dev/docs) - Complete guides and API reference
+- [Quick Start Guide](https://motia.dev/docs/getting-started/quick-start) - Detailed getting started tutorial
+- [Core Concepts](https://motia.dev/docs/concepts/overview) - Learn about Steps and Motia architecture
+- [Discord Community](https://discord.gg/motia) - Get help and connect with other developers

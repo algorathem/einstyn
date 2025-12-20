@@ -12,14 +12,10 @@ declare module 'motia' {
   }
 
   interface Handlers {
-    'Research Status API': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'Web Search': EventHandler<never, { topic: 'search-results-collected'; data: never }>
-    'Deep Research API': ApiRouteHandler<Record<string, unknown>, unknown, { topic: 'research-started'; data: never }>
-    'Research Report API': ApiRouteHandler<Record<string, unknown>, unknown, never>
-    'Generate Search Queries': EventHandler<never, { topic: 'search-queries-generated'; data: never }>
-    'Follow-up Research': EventHandler<never, { topic: 'search-queries-generated'; data: never }>
-    'Extract Web Content': EventHandler<never, { topic: 'content-extracted'; data: never }>
-    'Compile Research Report': EventHandler<never, never>
-    'Analyze Content': EventHandler<never, { topic: 'analysis-completed'; data: never } | { topic: 'follow-up-research-needed'; data: never }>
+    'StateAuditJob': CronHandler<{ topic: 'notification'; data: { template_id: string; email: string; template_data: Record<string, unknown> } }>
+    'ProcessFoodOrder': EventHandler<{ email: string; quantity: unknown; pet_id: string }, { topic: 'notification'; data: { template_id: string; email: string; template_data: Record<string, unknown> } }>
+    'Notification': EventHandler<{ template_id: string; email: string; template_data: Record<string, unknown> }, never>
+    'ApiTrigger': ApiRouteHandler<{ pet: unknown; foodOrder?: unknown | unknown }, ApiResponse<200, { id: string; name: string; photoUrl: string }>, { topic: 'process-food-order'; data: { email: string; quantity: unknown; pet_id: string } }>
   }
+    
 }

@@ -1,9 +1,2 @@
-openai>=1.0.0
-firecrawl-py>=0.0.1
-python-dotenv>=1.0.0
-fastapi
-uvicorn
-openai
-sqlalchemy
-psycopg2-binary
-redis
+pydantic>=2.6.1
+httpx>=0.28.1
