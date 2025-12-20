@@ -19,24 +19,24 @@
         "y": 1095
       },
       "steps\\generate_queries_step.py": {
-        "x": 350,
-        "y": 858
+        "x": 932,
+        "y": 907
       },
       "steps\\follow_up_research_step.py": {
-        "x": 3054,
-        "y": 650
+        "x": 3008,
+        "y": 1348
       },
       "steps\\extract_content_step.py": {
-        "x": 2354,
-        "y": 558
+        "x": 2692,
+        "y": 601
       },
       "steps\\compile_report_step.py": {
-        "x": 3054,
-        "y": 432
+        "x": 3685,
+        "y": 813
       },
       "steps\\analyze_content_step.py": {
-        "x": 2704,
-        "y": 519
+        "x": 3059,
+        "y": 828
       }
     }
   }
