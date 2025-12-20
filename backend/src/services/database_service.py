@@ -90,6 +90,26 @@ class DatabaseService:
                     'type': row[7],
                     'created_at': row[8]
                 })
-            return results
+    async def get_source_by_id(self, source_id: int) -> Dict[str, Any]:
+        """Get a source by its ID"""
+        with self.get_connection() as conn:
+            cur = conn.cursor()
+            
+            cur.execute('SELECT id, title, authors, abstract, url, year, field, type, created_at FROM sources WHERE id = ?', (source_id,))
+            row = cur.fetchone()
+            
+            if row:
+                return {
+                    'id': row[0],
+                    'title': row[1],
+                    'authors': eval(row[2]) if row[2] else [],
+                    'abstract': row[3],
+                    'url': row[4],
+                    'year': row[5],
+                    'field': row[6],
+                    'type': row[7],
+                    'created_at': row[8]
+                }
+            return None
 
 database_service = DatabaseService()
