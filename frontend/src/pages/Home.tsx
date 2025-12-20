@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { AuthButtons } from "@/components/AuthButtons";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Microscope, Home } from "lucide-react";
 
 const Home = () => {
   return (
@@ -15,11 +15,17 @@ const Home = () => {
         <div className="flex flex-col gap-4 items-center pt-6">
           <AuthButtons />
           
-          <div className="pt-4">
+          <div className="pt-4 flex flex-wrap gap-3 justify-center">
             <Link to="/dashboard">
-              <Button variant="link" className="gap-2">
-                Go to Dashboard
-                <ArrowRight className="w-4 h-4" />
+              <Button variant="outline" className="gap-2">
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Button>
+            </Link>
+            <Link to="/research">
+              <Button variant="outline" className="gap-2">
+                <Microscope className="w-4 h-4" />
+                Research
               </Button>
             </Link>
           </div>
