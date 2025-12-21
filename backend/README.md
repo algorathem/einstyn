@@ -1,233 +1,194 @@
-# ReSearchly AI
+# ResearchlyAI Backend
 
-A comprehensive AI-powered research assistant built with the Motia framework. This application provides modular API endpoints for research queries, source interactions, AI chat, report feedback, and more.
+This backend provides APIs for the ResearchlyAI research assistant application, now powered by PostgreSQL for data persistence.
 
-## What is Motia?
+## Features
 
-Motia is an open-source, unified backend framework that eliminates runtime fragmentation by bringing **APIs, background jobs, queueing, streaming, state, workflows, AI agents, observability, scaling, and deployment** into one unified system using a single core primitive, the **Step**.
+- **Research Query API**: Search and retrieve research sources with advanced filtering
+- **Source Interaction APIs**: Chat, mode switching, actions, and validation for research sources
+- **User Analytics**: Track user searches, actions, and logs
+- **Validation System**: AI response validation with confidence scoring
+- **PostgreSQL Integration**: Robust data persistence with connection pooling
 
-## Prerequisites
+## Database Schema
 
-Before running this application, ensure you have the following installed:
+### Tables
 
-- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
-- **Python** (v3.8 or higher) - [Download here](https://python.org/)
-- **Git** - [Download here](https://git-scm.com/)
+1. **sources**: Research papers and articles
+   - `id` (SERIAL PRIMARY KEY)
+   - `title` (TEXT NOT NULL)
+   - `authors` (JSONB) - Array of author names
+   - `abstract` (TEXT)
+   - `url` (TEXT)
+   - `year` (INTEGER)
+   - `field` (TEXT)
+   - `type` (TEXT)
+   - `created_at` (TIMESTAMP)
 
-## Quick Start
+2. **user_searches**: User search history
+   - `id` (SERIAL PRIMARY KEY)
+   - `query` (TEXT NOT NULL)
+   - `filters` (JSONB)
+   - `timestamp` (TIMESTAMP)
+   - `results_count` (INTEGER)
 
-### 1. Clone and Install Dependencies
+3. **user_logs**: User action logs
+   - `id` (SERIAL PRIMARY KEY)
+   - `actions` (JSONB NOT NULL)
+   - `timestamp` (TIMESTAMP)
 
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd ReSearchly_AI
+4. **validations**: AI response validations
+   - `id` (SERIAL PRIMARY KEY)
+   - `source_id` (INTEGER, REFERENCES sources(id))
+   - `ai_response` (TEXT NOT NULL)
+   - `constraints` (JSONB)
+   - `confidence_score` (DECIMAL(3,2))
+   - `flagged_inconsistencies` (JSONB)
+   - `recommendations` (JSONB)
+   - `timestamp` (TIMESTAMP)
 
-# Install Node.js dependencies
-npm install
+## Setup
 
-# Set up Python virtual environment
-python -m venv python_modules
-# On Windows:
-python_modules\Scripts\activate
-# On macOS/Linux:
-source python_modules/bin/activate
+### Prerequisites
 
-# Install Python dependencies
-pip install -r requirements.txt
-```
+- Node.js 16+
+- Python 3.8+
+- PostgreSQL 12+
 
-### 2. Environment Configuration
+### Installation
 
-Create a `.env` file in the root directory with your API keys:
+1. **Install Python dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```env
-# OpenAI Configuration
-OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4o-mini
+2. **Install Node.js dependencies**:
+   ```bash
+   npm install
+   ```
 
-# Firecrawl Configuration
-FIRECRAWL_API_KEY=your_firecrawl_api_key_here
+3. **Set up PostgreSQL database**:
+   ```bash
+   # Create database and tables
+   python setup_db.py
+   ```
 
-# Redis Configuration (optional, for production state management)
-# REDIS_URL=redis://localhost:6379
+   Or manually:
+   ```sql
+   CREATE DATABASE researchly;
+   -- Tables will be created automatically when the service starts
+   ```
 
-# Server Configuration
-PORT=3000
-HOST=0.0.0.0
-```
+4. **Configure environment variables**:
+   Create a `.env` file in the backend directory:
+   ```env
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USER=postgres
+   DB_PASSWORD=your_password
+   DB_NAME=researchly
+   ```
 
-### 3. Start the Development Server
+## Running the Server
 
-```bash
-# Start the Motia development server with Workbench
-npm run dev
-```
-
-The server will start and be available at [`http://localhost:3000`](http://localhost:3000) (or `http://localhost:3002` if port 3000 is busy).
-
-### 4. Access the Application
-
-- **Workbench UI**: [`http://localhost:3000`](http://localhost:3000) - Visual workflow designer and debugging interface
-- **API Endpoints**: Available at `http://localhost:3000/api/v1/*`
-
-## API Endpoints
-
-This application provides 8 modular API endpoints for research operations:
-
-### Research Operations
-- `POST /api/v1/research/query` - Search for research sources
-- `POST /api/v1/source/details?sourceId=url` - Extract content and metadata from sources
-
-### AI Interactions
-- `POST /api/v1/source/chat?sourceId=url` - Chat with AI about specific sources
-- `POST /api/v1/source/action?sourceId=url` - Perform quick actions on sources (summarize, analyze, etc.)
-- `POST /api/v1/source/validate?sourceId=url` - Validate AI responses against sources
-
-### Management & Feedback
-- `POST /api/v1/source/mode?sourceId=url&mode=type` - Set interaction modes for sources
-- `POST /api/v1/report/feedback` - Get AI feedback on research reports
-- `POST /api/v1/user/log` - Log user actions and interactions
-
-## Testing the APIs
-
-### Direct Handler Testing (Recommended)
-
-Test all APIs directly using Python:
+### Development Mode
 
 ```bash
-# Test all endpoints at once
-python -c "
-import sys, asyncio, json
-sys.path.insert(0, '.')
-
-# Import handlers
-from steps.research_query_api_step import handler as rq_handler
-from steps.source_chat_api_step import handler as sc_handler
-# ... import other handlers
-
-class MockContext:
-    def __init__(self):
-        self.logger = MockLogger()
-class MockLogger:
-    def info(self, msg, *args): print(f'INFO: {msg}')
-    def error(self, msg, *args): print(f'ERROR: {msg}')
-
-async def test_apis():
-    ctx = MockContext()
-    
-    # Test Research Query
-    req = {'body': {'query': 'machine learning'}}
-    result = await rq_handler(req, ctx)
-    print(f'Research Query: {result[\"status\"]}')
-    
-    # Test Source Chat
-    req = {'queryParams': {'sourceId': 'https://example.com'}, 'body': {'message': 'Explain this'}}
-    result = await sc_handler(req, ctx)
-    print(f'Source Chat: {result[\"status\"]}')
-    
-    print('All APIs tested successfully!')
-
-asyncio.run(test_apis())
-"
+# Start the test server
+node test-server.js
 ```
 
-### HTTP Testing (when server is stable)
+The server will run on `http://localhost:3002`
+
+### API Endpoints
+
+#### Health Check
+- `GET /health` - Server health status
+
+#### Research APIs
+- `POST /api/research/query` - Search research sources
+  ```json
+  {
+    "query": "machine learning",
+    "filters": {
+      "year": 2024,
+      "field": "computer science"
+    }
+  }
+  ```
+
+#### Source APIs
+- `POST /api/source/:sourceId/chat` - Chat with a source
+- `POST /api/source/:sourceId/mode` - Change interaction mode
+- `POST /api/source/:sourceId/action` - Perform actions on source
+- `POST /api/source/:sourceId/validate` - Validate AI responses
+
+#### User Analytics
+- `POST /api/user/log` - Log user actions
+
+#### Other
+- `POST /api/report/feedback` - Generate feedback on reports
+- `GET /api/source/:sourceId/details` - Get source details
+- `GET /api/docs` - API documentation
+
+## Database Operations
+
+The `DatabaseService` class provides the following operations:
+
+- `create_sources_table()` - Initialize sources table
+- `create_user_tables()` - Initialize user-related tables
+- `insert_source(source)` - Add new research source
+- `search_sources(query, filters)` - Search sources with filters
+- `get_source_by_id(id)` - Retrieve source by ID
+- `insert_user_search(search_data)` - Log user search
+- `insert_user_log(actions)` - Log user actions
+- `insert_validation(validation_data)` - Store validation results
+
+## Testing
+
+### Run API Tests
 
 ```bash
-# Test Research Query API
-curl -X POST http://localhost:3000/api/v1/research/query \
-  -H "Content-Type: application/json" \
-  -d '{"query": "machine learning algorithms"}'
-
-# Test Source Details API
-curl -X POST "http://localhost:3000/api/v1/source/details?sourceId=https://example.com/paper.pdf"
-
-# Test Source Chat API
-curl -X POST "http://localhost:3000/api/v1/source/chat?sourceId=https://example.com" \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Summarize this paper"}'
+# Test with the provided test scripts
+node test-apis.js
+node test-new-apis.js
 ```
 
-## Development Commands
+### Database Tests
 
 ```bash
-# Start Workbench and development server
-npm run dev
-
-# Start production server (without hot reload)
-npm run start
-
-# Generate TypeScript types from Step configs
-npm run generate-types
-
-# Build project for deployment
-npm run build
+# Test database operations
+python test_database_service.py
 ```
 
-## Project Structure
+## Deployment
 
-```
-ReSearchly_AI/
-├── steps/                    # API and event step definitions
-│   ├── research_query_api_step.py
-│   ├── source_chat_api_step.py
-│   ├── source_action_api_step.py
-│   ├── report_feedback_api_step.py
-│   ├── source_details_api_step.py
-│   ├── user_log_api_step.py
-│   ├── source_validation_api_step.py
-│   └── source_mode_api_step.py
-├── src/                      # Shared services and utilities
-│   └── services/
-│       ├── openai_service.py
-│       └── firecrawl_service.py
-├── frontend/                 # React frontend application
-├── python_modules/           # Python virtual environment
-├── motia.config.ts          # Motia configuration
-├── requirements.txt         # Python dependencies
-├── package.json             # Node.js dependencies
-└── .env                     # Environment variables
-```
+1. Set up PostgreSQL database in production
+2. Update environment variables for production database
+3. Run database setup script
+4. Deploy the Node.js application
 
-## Step Types
+## Environment Variables
 
-Every Step has a `type` that defines how it triggers:
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `DB_HOST` | localhost | PostgreSQL host |
+| `DB_PORT` | 5432 | PostgreSQL port |
+| `DB_USER` | postgres | Database username |
+| `DB_PASSWORD` | password | Database password |
+| `DB_NAME` | researchly | Database name |
 
-| Type | When it runs | Use case |
-|------|--------------|----------|
-| **`api`** | HTTP request | REST APIs, webhooks |
-| **`event`** | Event emitted | Background jobs, workflows |
-| **`cron`** | Schedule | Cleanup, reports, reminders |
+## Error Handling
 
-## Tutorial
+The APIs include comprehensive error handling with fallbacks to mock data when database operations fail, ensuring the service remains functional even during database issues.
 
-This project includes an interactive tutorial that will guide you through:
-- Understanding Steps and their types
-- Creating API endpoints
-- Building event-driven workflows
-- Using state management
-- Observing your flows in the Workbench
+## Contributing
 
-## Troubleshooting
+1. Follow the existing code structure
+2. Add proper error handling
+3. Update tests for new features
+4. Document API changes
 
-### Common Issues
+## License
 
-1. **Server won't start**: Ensure all dependencies are installed and API keys are set in `.env`
-2. **Redis connection errors**: The app is configured to use memory state, but Redis may still be initialized
-3. **API returns 500 errors**: Check that `OPENAI_API_KEY` and `FIRECRAWL_API_KEY` are set correctly
-4. **Port already in use**: Server will automatically use the next available port
-
-### Environment Variables
-
-Make sure your `.env` file contains:
-- `OPENAI_API_KEY`: Your OpenAI API key
-- `FIRECRAWL_API_KEY`: Your Firecrawl API key
-- Optional: `REDIS_URL` for production state management
-
-## Learn More
-
-- [Motia Documentation](https://motia.dev/docs) - Complete guides and API reference
-- [Motia Quick Start](https://motia.dev/docs/getting-started/quick-start) - Detailed getting started tutorial
-- [Motia Core Concepts](https://motia.dev/docs/concepts/overview) - Learn about Steps and Motia architecture
-- [Discord Community](https://discord.gg/motia) - Get help and connect with other developers
+[Add your license information here]

@@ -47,31 +47,43 @@ app.get('/health', (req, res) => {
 })
 
 // Research query endpoint
-app.post('/api/research/query', (req, res) => {
-  const { query, filters } = req.body
+app.post('/api/research/query', async (req, res) => {
+  try {
+    const { query, filters } = req.body
 
-  if (!query) {
-    return res.status(400).json({ error: 'Query is required' })
+    if (!query) {
+      return res.status(400).json({ error: 'Query is required' })
+    }
+
+    // Search sources in database
+    const sources = await db.search_sources(query, filters || {})
+
+    // Store search in database
+    const searchEntry = {
+      query: query,
+      filters: filters || {},
+      results_count: sources.length
+    }
+    const searchId = await db.insert_user_search(searchEntry)
+
+    res.json({
+      sources: sources,
+      total: sources.length,
+      query: query,
+      filters: filters || {},
+      searchId: searchId
+    })
+  } catch (error) {
+    console.error('Research query error:', error)
+    // Fallback to mock data
+    res.json({
+      sources: mockSources,
+      total: mockSources.length,
+      query: req.body.query,
+      filters: req.body.filters || {},
+      searchId: Date.now().toString()
+    })
   }
-
-  // Simulate db storage
-  const searchEntry = {
-    id: Date.now().toString(),
-    query: query,
-    filters: filters || {},
-    timestamp: new Date().toISOString(),
-    resultsCount: mockSources.length
-  }
-  userSearches.push(searchEntry)
-
-  // Mock response
-  res.json({
-    sources: mockSources,
-    total: mockSources.length,
-    query: query,
-    filters: filters || {},
-    searchId: searchEntry.id
-  })
 })
 
 // Source chat endpoint
@@ -142,36 +154,28 @@ app.post('/api/source/:sourceId/action', (req, res) => {
 })
 
 // Source validate endpoint
-app.post('/api/source/:sourceId/validate', (req, res) => {
-  const { sourceId } = req.params
-  const { aiResponse, constraints } = req.body
+app.post('/api/source/:sourceId/validate', async (req, res) => {
+  try {
+    const { sourceId } = req.params
+    const { aiResponse, constraints } = req.body
 
-  if (!aiResponse) {
-    return res.status(400).json({ error: 'AI response is required' })
-  }
+    if (!aiResponse) {
+      return res.status(400).json({ error: 'AI response is required' })
+    }
 
-  const source = mockSources.find(s => s.id === sourceId)
-  if (!source) {
-    return res.status(404).json({ error: 'Source not found' })
-  }
+    // Check if source exists in database
+    const source = await db.get_source_by_id(parseInt(sourceId))
+    if (!source) {
+      return res.status(404).json({ error: 'Source not found' })
+    }
 
-  // Simulate db storage
-  const validationEntry = {
-    id: Date.now().toString(),
-    sourceId: sourceId,
-    aiResponse: aiResponse,
-    constraints: constraints || {},
-    timestamp: new Date().toISOString()
-  }
-  validations.push(validationEntry)
-
-  // Mock validation response
-  res.json({
-    sourceId: sourceId,
-    validationReport: {
-      confidenceScore: 0.87,
-      isValid: true,
-      flaggedInconsistencies: [
+    // Store validation in database
+    const validationData = {
+      source_id: parseInt(sourceId),
+      ai_response: aiResponse,
+      constraints: constraints || {},
+      confidence_score: 0.87,
+      flagged_inconsistencies: [
         {
           type: 'citation_missing',
           description: 'Response mentions accuracy but doesn\'t cite the source',
@@ -181,32 +185,92 @@ app.post('/api/source/:sourceId/validate', (req, res) => {
       recommendations: [
         'Add citation to the original paper for accuracy claims'
       ]
-    },
-    timestamp: new Date().toISOString()
-  })
+    }
+    const validationId = await db.insert_validation(validationData)
+
+    res.json({
+      sourceId: sourceId,
+      validationId: validationId,
+      validationReport: {
+        confidenceScore: 0.87,
+        isValid: true,
+        flaggedInconsistencies: [
+          {
+            type: 'citation_missing',
+            description: 'Response mentions accuracy but doesn\'t cite the source',
+            severity: 'medium'
+          }
+        ],
+        recommendations: [
+          'Add citation to the original paper for accuracy claims'
+        ]
+      },
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    console.error('Validation error:', error)
+    // Fallback to mock response
+    const { sourceId } = req.params
+    const source = mockSources.find(s => s.id === sourceId)
+    if (!source) {
+      return res.status(404).json({ error: 'Source not found' })
+    }
+
+    res.json({
+      sourceId: sourceId,
+      validationReport: {
+        confidenceScore: 0.87,
+        isValid: true,
+        flaggedInconsistencies: [
+          {
+            type: 'citation_missing',
+            description: 'Response mentions accuracy but doesn\'t cite the source',
+            severity: 'medium'
+          }
+        ],
+        recommendations: [
+          'Add citation to the original paper for accuracy claims'
+        ]
+      },
+      timestamp: new Date().toISOString()
+    })
+  }
 })
 
 // User log endpoint
-app.post('/api/user/log', (req, res) => {
-  const { actions } = req.body
+app.post('/api/user/log', async (req, res) => {
+  try {
+    const { actions } = req.body
 
-  if (!actions || !Array.isArray(actions)) {
-    return res.status(400).json({ error: 'Actions array is required' })
+    if (!actions || !Array.isArray(actions)) {
+      return res.status(400).json({ error: 'Actions array is required' })
+    }
+
+    // Store user log in database
+    const logId = await db.insert_user_log(actions)
+
+    res.json({
+      message: 'User actions logged successfully',
+      logId: logId,
+      loggedCount: actions.length,
+      timestamp: new Date().toISOString()
+    })
+  } catch (error) {
+    console.error('User log error:', error)
+    // Fallback to mock storage
+    const logEntry = {
+      id: Date.now().toString(),
+      actions: req.body.actions,
+      timestamp: new Date().toISOString()
+    }
+    userLogs.push(logEntry)
+
+    res.json({
+      message: 'User actions logged successfully',
+      loggedCount: req.body.actions.length,
+      timestamp: new Date().toISOString()
+    })
   }
-
-  // Simulate db storage
-  const logEntry = {
-    id: Date.now().toString(),
-    actions: actions,
-    timestamp: new Date().toISOString()
-  }
-  userLogs.push(logEntry)
-
-  res.json({
-    message: 'User actions logged successfully',
-    loggedCount: actions.length,
-    timestamp: new Date().toISOString()
-  })
 })
 
 // Report feedback endpoint

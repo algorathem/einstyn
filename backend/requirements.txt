@@ -4,3 +4,4 @@ openai
 firecrawl-py
 requests
 python-dotenv
+asyncpg

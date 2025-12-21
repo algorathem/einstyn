@@ -32,7 +32,12 @@ Get the server health status and available APIs.
     "POST /api/research/query",
     "POST /api/source/:sourceId/chat",
     "POST /api/source/:sourceId/mode",
-    "POST /api/source/:sourceId/action"
+    "POST /api/source/:sourceId/action",
+    "POST /api/source/:sourceId/validate",
+    "POST /api/user/log",
+    "POST /api/report/feedback",
+    "GET /api/source/:sourceId/details",
+    "GET /api/docs"
   ]
 }
 ```
